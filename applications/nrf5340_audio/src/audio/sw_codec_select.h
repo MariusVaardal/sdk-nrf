@@ -11,7 +11,7 @@
 #include "channel_assignment.h"
 
 #if (CONFIG_SW_CODEC_LC3)
-#define LC3_MAX_FRAME_SIZE_MS 10
+#define LC3_MAX_FRAME_SIZE_MS	10
 #define LC3_ENC_MONO_FRAME_SIZE (CONFIG_LC3_BITRATE * LC3_MAX_FRAME_SIZE_MS / (8 * 1000))
 
 #define LC3_PCM_NUM_BYTES_MONO                                                                     \
@@ -20,16 +20,16 @@
 #define LC3_DEC_TIME_US 1500
 #else
 #define LC3_ENC_MONO_FRAME_SIZE 0
-#define LC3_PCM_NUM_BYTES_MONO 0
-#define LC3_ENC_TIME_US 0
-#define LC3_DEC_TIME_US 0
+#define LC3_PCM_NUM_BYTES_MONO	0
+#define LC3_ENC_TIME_US		0
+#define LC3_DEC_TIME_US		0
 #endif /* CONFIG_SW_CODEC_LC3 */
 
 /* Max will be used when multiple codecs are supported */
-#define ENC_MAX_FRAME_SIZE MAX(LC3_ENC_MONO_FRAME_SIZE, 0)
-#define ENC_TIME_US MAX(LC3_ENC_TIME_US, 0)
-#define DEC_TIME_US MAX(LC3_DEC_TIME_US, 0)
-#define PCM_NUM_BYTES_MONO MAX(LC3_PCM_NUM_BYTES_MONO, 0)
+#define ENC_MAX_FRAME_SIZE   MAX(LC3_ENC_MONO_FRAME_SIZE, 0)
+#define ENC_TIME_US	     MAX(LC3_ENC_TIME_US, 0)
+#define DEC_TIME_US	     MAX(LC3_DEC_TIME_US, 0)
+#define PCM_NUM_BYTES_MONO   MAX(LC3_PCM_NUM_BYTES_MONO, 0)
 #define PCM_NUM_BYTES_STEREO (PCM_NUM_BYTES_MONO * 2)
 
 enum sw_codec_select {
@@ -39,8 +39,13 @@ enum sw_codec_select {
 
 enum sw_codec_num_ch {
 	SW_CODEC_ZERO_CHANNELS,
-	SW_CODEC_MONO, /* Only use one channel */
-	SW_CODEC_STEREO, /* Use both channels */
+	SW_CODEC_ONE_CHANNEL,  /* Only use one channel */
+	SW_CODEC_TWO_CHANNELS, /* Use both channels */
+};
+
+enum sw_codec_audio_mode {
+	SW_CODEC_MONO,
+	SW_CODEC_STEREO,
 };
 
 struct sw_codec_encoder {
@@ -52,6 +57,7 @@ struct sw_codec_encoder {
 
 struct sw_codec_decoder {
 	bool enabled;
+	uint8_t audio_mode;
 	uint8_t num_ch;
 	enum audio_channel audio_ch; /* Only used if channel mode is mono */
 };
@@ -59,11 +65,16 @@ struct sw_codec_decoder {
 /** @brief  Sw_codec configuration structure
  */
 struct sw_codec_config {
-	enum sw_codec_select sw_codec; /* sw_codec to be used, e.g. LC3, etc */
+	enum sw_codec_select sw_codec;	 /* sw_codec to be used, e.g. LC3, etc */
 	struct sw_codec_decoder decoder; /* Struct containing settings for decoder */
 	struct sw_codec_encoder encoder; /* Struct containing settings for encoder */
-	bool initialized; /* Status of codec */
+	bool initialized;		 /* Status of codec */
 };
+
+/**@brief	Check if sw_codec is initialized
+ * @return	true, if initialized. false, otherwise
+ */
+bool sw_codec_is_initialized(void);
 
 /**@brief	Encode PCM data and output encoded data
  *

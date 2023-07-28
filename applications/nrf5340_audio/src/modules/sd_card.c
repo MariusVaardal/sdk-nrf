@@ -23,11 +23,10 @@ LOG_MODULE_REGISTER(sd_card, CONFIG_MODULE_SD_CARD_LOG_LEVEL);
 #define PATH_MAX_LEN	      260
 #define K_SEM_OPER_TIMEOUT_MS 500
 
-K_SEM_DEFINE(m_sem_sd_oper_ongoing, 1, 1);
-
 static const char *sd_root_path = "/SD:";
 static FATFS fat_fs;
 static bool sd_init_success;
+K_SEM_DEFINE(m_sem_sd_oper_ongoing, 1, 1);
 
 static struct fs_mount_t mnt_pt = {
 	.type = FS_FATFS,
