@@ -556,7 +556,6 @@ static void alt_buffer_free_both(void)
  * the in.fifo message queue.
  */
 
-uint8_t sound_mix_buf[BLK_MONO_SIZE_OCTETS];
 static void audio_datapath_i2s_blk_complete(uint32_t frame_start_ts, uint32_t *rx_buf_released,
 					    uint32_t const *tx_buf_released)
 {

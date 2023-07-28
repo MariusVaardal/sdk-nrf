@@ -13,7 +13,7 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(lc3_playback, 4); /* For draft PR feedback: going to change this line */
 
-#define RING_BUF_SIZE		960 /* This can be modified */
+#define RING_BUF_SIZE		1920 /* This can be modified */
 #define lc3_playback_STACK_SIZE 4096
 
 /*File structure of the LC3 encoded files*/
@@ -166,7 +166,6 @@ static int lc3_playback_play(const char *filename, const char *path_to_file)
 	}
 	lc3_playback_active = true;
 	for (uint32_t i = 0; i < lc3_frames_num; i++) {
-
 		/* Skip the frame length info to get to the audio data */
 		ret = sd_card_segment_skip(&lc3_fr_len_size);
 		if (ret < 0) {
@@ -209,7 +208,7 @@ static void lc3_playback_thread(void *arg1, void *arg2, void *arg3)
 	while (!sw_codec_is_initialized()) {
 		k_msleep(100);
 	}
-	lc3_playback_play("enc_21.bin", "");
+	lc3_playback_play("enc_3.bin", "");
 }
 
 int lc3_playback_init(void)

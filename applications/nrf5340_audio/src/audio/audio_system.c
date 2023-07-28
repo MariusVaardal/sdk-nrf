@@ -22,7 +22,6 @@
 #include "audio_usb.h"
 #include "streamctrl.h"
 #include "pcm_mix.h"
-#include <hal/nrf_gpio.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(audio_system, CONFIG_AUDIO_SYSTEM_LOG_LEVEL);
