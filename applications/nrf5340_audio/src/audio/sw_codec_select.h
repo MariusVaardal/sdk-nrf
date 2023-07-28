@@ -11,7 +11,7 @@
 #include "channel_assignment.h"
 
 #if (CONFIG_SW_CODEC_LC3)
-#define LC3_MAX_FRAME_SIZE_MS 10
+#define LC3_MAX_FRAME_SIZE_MS	10
 #define LC3_ENC_MONO_FRAME_SIZE (CONFIG_LC3_BITRATE * LC3_MAX_FRAME_SIZE_MS / (8 * 1000))
 
 #define LC3_PCM_NUM_BYTES_MONO                                                                     \
@@ -20,16 +20,16 @@
 #define LC3_DEC_TIME_US 1500
 #else
 #define LC3_ENC_MONO_FRAME_SIZE 0
-#define LC3_PCM_NUM_BYTES_MONO 0
-#define LC3_ENC_TIME_US 0
-#define LC3_DEC_TIME_US 0
+#define LC3_PCM_NUM_BYTES_MONO	0
+#define LC3_ENC_TIME_US		0
+#define LC3_DEC_TIME_US		0
 #endif /* CONFIG_SW_CODEC_LC3 */
 
 /* Max will be used when multiple codecs are supported */
-#define ENC_MAX_FRAME_SIZE MAX(LC3_ENC_MONO_FRAME_SIZE, 0)
-#define ENC_TIME_US MAX(LC3_ENC_TIME_US, 0)
-#define DEC_TIME_US MAX(LC3_DEC_TIME_US, 0)
-#define PCM_NUM_BYTES_MONO MAX(LC3_PCM_NUM_BYTES_MONO, 0)
+#define ENC_MAX_FRAME_SIZE   MAX(LC3_ENC_MONO_FRAME_SIZE, 0)
+#define ENC_TIME_US	     MAX(LC3_ENC_TIME_US, 0)
+#define DEC_TIME_US	     MAX(LC3_DEC_TIME_US, 0)
+#define PCM_NUM_BYTES_MONO   MAX(LC3_PCM_NUM_BYTES_MONO, 0)
 #define PCM_NUM_BYTES_STEREO (PCM_NUM_BYTES_MONO * 2)
 
 enum sw_codec_select {
@@ -38,34 +38,49 @@ enum sw_codec_select {
 };
 
 enum sw_codec_num_ch {
-	SW_CODEC_ZERO_CHANNELS,
-	SW_CODEC_MONO, /* Only use one channel */
-	SW_CODEC_STEREO, /* Use both channels */
+	SW_CODEC_ONE_CHANNEL = 1, /* Only use one channel */
+	SW_CODEC_TWO_CHANNELS,	  /* Use both channels */
+};
+
+enum sw_codec_audio_mode {
+	SW_CODEC_MONO,
+	SW_CODEC_STEREO,
 };
 
 struct sw_codec_encoder {
 	bool enabled;
 	int bitrate;
+	uint8_t audio_mode;
 	uint8_t num_ch;
-	enum audio_channel audio_ch; /* Only used if channel mode is mono */
+	enum audio_channel audio_ch;
 };
 
 struct sw_codec_decoder {
 	bool enabled;
-	uint8_t num_ch;
-	enum audio_channel audio_ch; /* Only used if channel mode is mono */
+	uint8_t audio_mode;	     /* Mono or stereo */
+	uint8_t num_ch;		     /* Number of decoder channels */
+	enum audio_channel audio_ch; /* Used to choose which channel to use */
 };
 
-/** @brief  Sw_codec configuration structure
+/**
+ * @brief  Sw_codec configuration structure
  */
 struct sw_codec_config {
-	enum sw_codec_select sw_codec; /* sw_codec to be used, e.g. LC3, etc */
+	enum sw_codec_select sw_codec;	 /* sw_codec to be used, e.g. LC3, etc */
 	struct sw_codec_decoder decoder; /* Struct containing settings for decoder */
 	struct sw_codec_encoder encoder; /* Struct containing settings for encoder */
-	bool initialized; /* Status of codec */
+	bool initialized;		 /* Status of codec */
 };
 
-/**@brief	Encode PCM data and output encoded data
+/**
+ * @brief	Check if sw_codec is initialized
+ * @retval	true	If initialized.
+ * @retval	false	Otherwise.
+ */
+bool sw_codec_is_initialized(void);
+
+/**
+ * @brief	Encode PCM data and output encoded data
  *
  * @note	Takes in stereo PCM stream, will encode either one or two
  *		channels, based on channel_mode set during init
@@ -79,7 +94,8 @@ struct sw_codec_config {
  */
 int sw_codec_encode(void *pcm_data, size_t pcm_size, uint8_t **encoded_data, size_t *encoded_size);
 
-/**@brief	Decode encoded data and output PCM data
+/**
+ * @brief	Decode encoded data and output PCM data
  *
  * @param[in]	encoded_data	Pointer to encoded data
  * @param[in]	encoded_size	Size of encoded data
@@ -92,7 +108,8 @@ int sw_codec_encode(void *pcm_data, size_t pcm_size, uint8_t **encoded_data, siz
 int sw_codec_decode(uint8_t const *const encoded_data, size_t encoded_size, bool bad_frame,
 		    void **pcm_data, size_t *pcm_size);
 
-/**@brief	Uninitialize sw_codec and free allocated space
+/**
+ * @brief	Uninitialize sw_codec and free allocated space
  *
  * @note	Must be called before calling init for another sw_codec
  *
@@ -102,7 +119,8 @@ int sw_codec_decode(uint8_t const *const encoded_data, size_t encoded_size, bool
  */
 int sw_codec_uninit(struct sw_codec_config sw_codec_cfg);
 
-/**@brief	Initialize sw_codec and statically or dynamically
+/**
+ * @brief	Initialize sw_codec and statically or dynamically
  *		allocate memory to be used, depending on selected codec
  *		and its configuration.
  *

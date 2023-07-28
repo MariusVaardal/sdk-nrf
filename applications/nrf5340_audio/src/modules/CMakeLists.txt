@@ -14,3 +14,8 @@ target_sources(app PRIVATE
 	       ${CMAKE_CURRENT_SOURCE_DIR}/power_meas.c
 	       ${CMAKE_CURRENT_SOURCE_DIR}/sd_card.c
 )
+
+if (CONFIG_SD_CARD_PLAYBACK)
+        target_sources(app PRIVATE
+                ${CMAKE_CURRENT_SOURCE_DIR}/sd_card_playback.c)
+endif()
