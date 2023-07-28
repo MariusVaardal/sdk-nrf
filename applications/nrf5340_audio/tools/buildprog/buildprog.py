@@ -16,6 +16,7 @@ import json
 import subprocess
 import re
 import glob
+import getpass
 from colorama import Fore, Style
 from prettytable import PrettyTable
 from nrf5340_audio_dk_devices import (
@@ -108,6 +109,10 @@ def __build_cmd_get(core: Core, device: AudioDevice, build: BuildType, pristine,
 
         if options.nrf21540:
             device_flag += " -DSHIELD=nrf21540ek_fwd"
+
+        if options.user_specific_name:
+            user_specific_bt_name = "NRF5340_AUDIO_" + getpass.getuser().upper()
+            device_flag += " -DCONFIG_BT_DEVICE_NAME=\\\""+ user_specific_bt_name + "\\\""
 
         if os.name == 'nt':
             release_flag = release_flag.replace('\\', '/')
@@ -299,6 +304,14 @@ def __main():
         dest="nrf21540",
         default=False,
         help="Set when using nRF21540 for extra TX power",
+        )
+    parser.add_argument(
+        "-u"
+        "--user_bt_name",
+        action="store_true",
+        dest="user_specific_name",
+        default=False,
+        help="Set to true for user specific BT broadcast name",
         )
     options = parser.parse_args(args=sys.argv[1:])
 

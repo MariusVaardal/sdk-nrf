@@ -80,6 +80,10 @@ module = MODULE_SD_CARD
 module-str = module-sd-card
 source "subsys/logging/Kconfig.template.log_config"
 
+module = MODULE_SD_CARD_PLAYBACK
+module-str = module-sd-card-playback
+source "subsys/logging/Kconfig.template.log_config"
+
 endmenu # Log levels
 
 #----------------------------------------------------------------------------#
@@ -131,4 +135,9 @@ config VOLUME_MSG_SUB_QUEUE_SIZE
 	default 4
 
 endmenu # Zbus
+menu "SD card playback"
+config SD_CARD_PLAYBACK
+	bool "If true, SD card playback is enabled"
+	default n
+endmenu # SD card playback
 endmenu # Modules

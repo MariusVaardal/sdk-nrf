@@ -47,7 +47,11 @@ int sd_card_list_files(char const *const path, char *buf, size_t *buf_size)
 		return -EPERM;
 	}
 
-	k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+	ret = k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+
+	if (ret != 0) {
+		LOG_ERR("Sem take failed. Ret: %d", ret);
+	}
 
 	if (!sd_init_success) {
 		k_sem_give(&m_sem_sd_oper_ongoing);
@@ -132,7 +136,11 @@ int sd_card_open_write_close(char const *const filename, char const *const data,
 		return -EPERM;
 	}
 
-	k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+	ret = k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+
+	if (ret != 0) {
+		LOG_ERR("Sem take failed. Ret: %d", ret);
+	}
 
 	if (!sd_init_success) {
 		k_sem_give(&m_sem_sd_oper_ongoing);
@@ -194,7 +202,11 @@ int sd_card_open_read_close(char const *const filename, char *const buf, size_t 
 		return -EPERM;
 	}
 
-	k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+	ret = k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+
+	if (ret != 0) {
+		LOG_ERR("Sem take failed. Ret: %d", ret);
+	}
 
 	if (!sd_init_success) {
 		k_sem_give(&m_sem_sd_oper_ongoing);
@@ -251,7 +263,11 @@ int sd_card_open(char const *const filename, struct fs_file_t *f_seg_read_entry)
 		return -EPERM;
 	}
 
-	k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+	ret = k_sem_take(&m_sem_sd_oper_ongoing, K_MSEC(K_SEM_OPER_TIMEOUT_MS));
+
+	if (ret != 0) {
+		LOG_ERR("Sem take failed. Ret: %d", ret);
+	}
 
 	if (!sd_init_success) {
 		k_sem_give(&m_sem_sd_oper_ongoing);
