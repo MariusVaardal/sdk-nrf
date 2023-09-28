@@ -74,6 +74,7 @@ struct sw_codec_config {
 
 /**
  * @brief	Check if sw_codec is initialized
+ *
  * @retval	true	If initialized.
  * @retval	false	Otherwise.
  */

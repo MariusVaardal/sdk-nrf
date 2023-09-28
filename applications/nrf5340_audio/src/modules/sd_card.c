@@ -131,6 +131,7 @@ int sd_card_open_write_close(char const *const filename, char const *const data,
 
 	if (ret != 0) {
 		LOG_ERR("Sem take failed. Ret: %d", ret);
+		return ret;
 	}
 
 	if (!sd_init_success) {
@@ -192,6 +193,7 @@ int sd_card_open_read_close(char const *const filename, char *const buf, size_t 
 
 	if (ret != 0) {
 		LOG_ERR("Sem take failed. Ret: %d", ret);
+		return ret;
 	}
 
 	if (!sd_init_success) {
@@ -248,6 +250,7 @@ int sd_card_open(char const *const filename, struct fs_file_t *f_seg_read_entry)
 
 	if (ret != 0) {
 		LOG_ERR("Sem take failed. Ret: %d", ret);
+		return ret;
 	}
 
 	if (!sd_init_success) {

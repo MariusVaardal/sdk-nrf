@@ -54,7 +54,6 @@ static void audio_gateway_configure(void)
 #if (CONFIG_STREAM_BIDIRECTIONAL)
 	sw_codec_cfg.decoder.enabled = true;
 	sw_codec_cfg.decoder.num_ch = SW_CODEC_ONE_CHANNEL;
-	sw_codec_cfg.decoder.audio_mode = SW_CODEC_MONO;
 #endif /* (CONFIG_STREAM_BIDIRECTIONAL) */
 
 	if (IS_ENABLED(CONFIG_SW_CODEC_LC3)) {
