@@ -47,6 +47,7 @@ TARGET_RELEASE_FOLDER = "build_release"
 TARGET_DEBUG_FOLDER = "build_debug"
 
 MAX_USER_NAME_LEN = 248 - len('\0')
+NRF5340_AUDIO_DK_SNR_DEFAULT = 1000
 
 
 def __print_add_color(status):
@@ -323,7 +324,7 @@ def __main():
         nargs='*',
         dest="custom_bt_name",
         default=None,
-        help="Use custom Bluetooth device name.",
+        help="Use custom Bluetooth device name",
     )
     parser.add_argument(
         "-u",
@@ -331,7 +332,7 @@ def __main():
         action="store_true",
         dest="user_bt_name",
         default=False,
-        help="Set to generate a user specific Bluetooth device name. Note that this will put the computer user name on air in clear text.",
+        help="Set to generate a user specific Bluetooth device name. Note that this will put the computer user name on air in clear text",
     )
     options = parser.parse_args(args=sys.argv[1:])
 
@@ -364,6 +365,13 @@ def __main():
     # being pushed
     with USER_CONFIG.open() as f:
         dev_arr = json.load(f)
+
+    if all(dev["nrf5340_audio_dk_snr"] == NRF5340_AUDIO_DK_SNR_DEFAULT for dev in dev_arr):
+        ids = sorted([int(id) for id in subprocess.run(
+            ["nrfjprog", "--ids"], stdout=subprocess.PIPE).stdout.decode("utf-8").splitlines()])
+        for i in range(len(ids)):
+            dev_arr[i]["nrf5340_audio_dk_snr"] = ids[i]
+
     device_list = [
         DeviceConf(
             nrf5340_audio_dk_snr=dev["nrf5340_audio_dk_snr"],
